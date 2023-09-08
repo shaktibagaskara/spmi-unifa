@@ -130,14 +130,6 @@
                 <span>Selamat datang! Jumlah data yang harus diisi</span>
                 <h3> {{ $totalPertanyaan }} Nomor</h3>
               </div>
-              <?php
-              if ($totalHasil > 0) { ?>
-                <a href="#!" class="btn btn-danger">Anda telah melakukan Audit</a>
-              <?php } else  if ($totalData > 0) { ?>
-                <a href="ujianDosen" class="btn btn-primary">Mulai Audit</a>
-              <?php } else { ?>
-                <a href="#!" class="btn btn-success">Tidak Ada Data yang Perlu Diaudit</a>
-              <?php } ?>
               <span class="float-right"><img src="admin2/assets/img/dash/dash-2.png" width="80" alt=""></span>
             </div>
           </div>

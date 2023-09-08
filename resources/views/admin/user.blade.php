@@ -107,7 +107,10 @@
               <a href="/hasilAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
                 <span>Hasil</span></a>
             </li>
-
+            <li>
+              <a href="/prodiAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
+                <span>Prodi</span></a>
+            </li>
           </ul>
           </li>
           </ul>
@@ -169,6 +172,7 @@
                         <th>Username</th>
                         <th>Password</th>
                         <th>Jabatan</th>
+                        <th>Prodi</th>
                         <th class="text-right">Action</th>
                       </tr>
                     </thead>
@@ -184,6 +188,7 @@
                             **************
                           </td>
                           <td> {{ $a->jabatan }}</td>
+                          <td> {{ $a->prodi }}</td>
                           <td class="text-right text-secondary disabled"> No Action </td>
                         </tr>
                       <?php } else { ?>
@@ -202,6 +207,7 @@
                               {{ $a->jabatan }}
                             <?php } ?>
                           </td>
+                          <td> {{ $a->prodi }}</td>
                           <td class="text-right">
                             <a href="#!" class="btn btn-primary btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#editModal{{$a->id}}">
                               <i class="far fa-edit" data-bs-toggle="tooltip" title="Edit"></i>
@@ -229,6 +235,12 @@
                             @csrf
                             <div class="form-group">
                               <div class="col-sm-12">
+                                <input class="form-control" placeholder="Nama Lengkap" type="text" name="nama_lengkap">
+                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="col-sm-12">
                                 <input class="form-control" placeholder="Username" type="text" name="username">
                                 <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                               </div>
@@ -243,11 +255,22 @@
                               <div class="col-sm-12">
                                 <label for="">Pilih Jabatan</label>
                                 <select class="form-control " name="jabatan" id="jabatan">
-                                  <option value="dosen">Dosen</option>
+                                  <option value="dosen">Auditee</option>
                                   <option value="kaprodi">Kaprodi</option>
                                 </select>
                               </div>
                             </div>
+                            <div class="form-group">
+                              <div class="col-sm-12">
+                                <label for="">Program Studi</label>
+                                <select class="form-control" name="prodi">
+                                  @foreach ($prodi as $p)
+                                  <option value="{{$p->nama_prodi}}">{{$p->nama_prodi}}</option>
+                                  @endforeach
+                                </select>
+                              </div>
+                            </div>
+
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -272,6 +295,12 @@
                             @csrf
                             <div class="form-group">
                               <div class="col-sm-12">
+                                <input class="form-control" placeholder="Nama Lengkap" type="text" name="nama_lengkap" value="{{$a->nama_lengkap}}">
+                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="col-sm-12">
                                 <input class="form-control" placeholder="Username" type="text" name="username" value="{{$a->username}}">
                                 <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                               </div>
@@ -287,11 +316,23 @@
                                 <label for="">Pilih Jabatan</label>
                                 <select class="form-control " name="jabatan" id="jabatan">
                                   <option value="{{$a->jabatan}}">{{$a->jabatan}}</option>
-                                  <option value="dosen">Dosen</option>
+                                  <option value="dosen">Auditee</option>
                                   <option value="kaprodi">Kaprodi</option>
                                 </select>
                               </div>
                             </div>
+                            <div class="form-group">
+                              <div class="col-sm-12">
+                                <label for="">Program Studi</label>
+                                <select class="form-control" name="prodi">
+                                  <option value="{{$a->prodi}}">{{$a->prodi}}</option>
+                                  @foreach ($prodi as $p)
+                                  <option value="{{$p->nama_prodi}}">{{$p->nama_prodi}}</option>
+                                  @endforeach
+                                </select>
+                              </div>
+                            </div>
+
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -204,7 +204,7 @@
                     </tbody>
                     <tbody class="text-left">
                       @foreach ($pertanyaan as $a)
-
+                      <input type="hidden" name="evaluasi{{ $loop->iteration }}" value="-">
                       <tr>
                         <td>
                           <h2> {{ $loop->iteration }} </h2>

@@ -105,7 +105,10 @@
               <a href="/hasilAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
                 <span>Hasil</span></a>
             </li>
-
+            <li>
+              <a href="/prodiAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
+                <span>Prodi</span></a>
+            </li>
           </ul>
           </li>
           </ul>
@@ -216,7 +219,11 @@
                           <div class="form-group">
                             <div class="col-sm-12">
                               <label for="">Nama Program Studi</label>
-                              <input required class="form-control" type="text" name="nama_prodi">
+                              <select class="form-control" name="nama_prodi">
+                                @foreach ($prodi as $p)
+                                <option value="{{$p->nama_prodi}}">{{$p->nama_prodi}}</option>
+                                @endforeach
+                              </select>
                               <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                             </div>
                           </div>
@@ -251,7 +258,7 @@
                           <div class="form-group">
                             <div class="col-sm-12">
                               <label for="">Auditee</label>
-                              <select class="form-control" name="jabatan" id="jabatan">
+                              <select class="form-control" name="auditee" id="jabatan">
                                 @foreach ($user as $u)
                                 <?php if ($u->username == "admin") {
                                 } else { ?>
@@ -285,7 +292,7 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Agenda</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Informasi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
@@ -301,7 +308,12 @@
                           <div class="form-group">
                             <div class="col-sm-12">
                               <label for="">Nama Program Studi</label>
-                              <input class="form-control" type="text" name="nama_prodi" value="{{$a->nama_prodi}}">
+                              <select class="form-control" name="nama_prodi" id="jabatan">
+                                <option value="{{$a->nama_prodi}}">{{$a->nama_prodi}}</option>
+                                @foreach ($prodi as $p)
+                                <option value="{{$p->nama_prodi}}">{{$p->nama_prodi}}</option>
+                                @endforeach
+                              </select>
                               <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                             </div>
                           </div>

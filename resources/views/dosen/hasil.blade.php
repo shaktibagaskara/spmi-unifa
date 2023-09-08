@@ -108,42 +108,58 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-header">
-                <div class="row align-items-center">
-                  <div class="col-sm-6">
-                    <div class="page-title">
-                      <?php if ($totalHasil < 1) { ?>
-                        <div class="btn btn-sm btn-danger text-white">Anda belum melakukan Audit! Silahkan klik menu <span class="badge bg-warning">Dashboard</span> untuk melakukan Audit </div>
-                      <?php  } else { ?>
-                        Daftar Hasil ( {{ $totalHasil }} Butir Audit )
-                      <?php } ?>
-                    </div>
-                  </div>
-                  <div class="col-sm-6 text-sm-right">
-                    <div class=" mt-sm-0 mt-2">
+              <?php if ($totalHasil < 1) { ?>
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col-sm-6">
 
+                      <div class="page-title">
+                        <div class="btn btn-sm btn-danger text-white">Kepala Program Studi {{ $prodi }} belum melakukan Audit </div>
+                      </div>
+
+                    </div>
+                    <div class="col-sm-6 text-sm-right">
+                      <div class=" mt-sm-0 mt-2">
+
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              <?php  } else { ?>
 
-              <div class="card-body">
-                <div class="">
-                  <table class="table custom-table">
-                    <thead class="thead-light">
-                      <tr>
-                        <th>No. </th>
-                        <th>Pertanyaan</th>
-                        <th>Bukti</th>
-                        <th>Referensi</th>
-                        <th>Keterangan</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach ($hasil as $a)
-                      <?php if ($a->pengirim != session('username')) {
-                        # code...
-                      } else { ?>
+              <?php } ?>
+              <?php if ($totalHasil < 1) { ?>
+              <?php  } else { ?>
+                <div class="container mt-2 text-center">Berikut Merupakan hasil Audit yang diisi oleh : <br>
+                  <b> <span class="btn btn-dark text-white" style=" text-transform: uppercase;">Kepala Program Studi {{ $prodi }} </span> </b>
+                </div>
+
+                @if (session()->has('error'))
+                <div class="alert alert-danger mt-2" role="alert">
+                  {{ session('error') }}
+                </div>
+                @endif
+                @if (session()->has('berhasil'))
+                <div class="alert alert-success mt-2" role="alert">
+                  {{ session('berhasil') }}
+                </div>
+                @endif
+
+                <div class="card-body">
+                  <div class="">
+                    <table class="table custom-table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>No. </th>
+                          <th>Pertanyaan</th>
+                          <th>Bukti</th>
+                          <th>Referensi</th>
+                          <th>Evaluasi</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach ($hasil as $a)
+
                         <tr>
                           <td>
                             <h2> {{ $loop->iteration }} </h2>
@@ -158,100 +174,90 @@
                             <?php } ?>
                           </td>
                           <td> {{ $a->referensi }}</td>
-                          <td> {{ $a->keterangan }}</td>
+                          <td>
+                            <?php if ($a->evaluasi == null || $a->evaluasi == "-") { ?>
+                              <form action="/tambahEvaluasi" method="post">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $a->id }}">
+                                <input type="hidden" name="nomor" value="{{ $loop->iteration }}">
+                                <textarea required name="evaluasi" placeholder="Ketikkan evaluasi Anda..." class="form-control" id="" cols="110" rows="5"></textarea>
+                                <button type="submit" class="btn btn-sm btn-warning"> <i class="far fa-save d-flex"> &nbsp; Simpan</i></button>
+                              </form>
+                            <?php } else { ?>
+                              <table style="width: 100%;">
+                                <tr>
+                                  <td style="width: 45%;"> {{ $a->evaluasi }}</td>
+                                  <td style="width: 55%; font-size:10px" class="text-center">
+                                    <div class="btn btn-success btn-sm " data-bs-toggle="modal" data-bs-target="#exampleModal{{ $a->id }}{{ $loop->iteration }}">
+                                      <!-- <i class="fa fa-globe"></i> -->
+                                      <i class="far fa-edit d-flex"> Ubah</i>
+                                    </div>
+                                    <div class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#resetModal{{ $a->id }}{{ $loop->iteration }}"> <i class="fas fa-eraser d-flex">Reset</i></div>
+                                  </td>
+                                </tr>
+                              </table>
+                            <?php } ?>
+                          </td>
                         </tr>
 
-                      <?php } ?>
 
-                      @endforeach
-                    </tbody>
-                  </table>
+                        @endforeach
+                      </tbody>
+                    </table>
+                    <div class="mt-2 btn btn-primary">Simpan Perubahan</div>
 
-                  <!-- Modal Tambah -->
-                  <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Tambah Data Agenda</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <form action="/tambahAgenda" method="post" class="form-horizontal">
-                            @csrf
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <label for="">Tanggal Kegiatan</label>
-                                <input class="form-control" type="date" name="tanggal_agenda">
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <input class="form-control" name="acara_agenda" placeholder="Acara Kegiatan" type="text">
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <label for="">Kegiatan</label><br>
-                                <textarea class="form-control" name="kegiatan_agenda" cols="45" rows="3"></textarea>
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-primary">Tambah Data</button>
-                        </div>
-                        </form>
-                      </div>
+                  </div>
+                </div>
+              <?php } ?>
+
+              @foreach ($hasil as $a)
+
+              <div class="modal fade" id="resetModal{{ $a->id }}{{ $loop->iteration }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" style="width: 250px;">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Reset data ini?</h5>
+                    </div>
+                    <div class="modal-body">
+                      <form action="/resetEvaluasi" method="post">
+                        @csrf
+                        <input type="hidden" name="nomor" value="{{ $loop->iteration }}">
+                        <input type="hidden" name="id" value="{{ $a->id }}">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Reset</button>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+
                     </div>
                   </div>
-
-                  <!-- Modal Edit -->
-                  @foreach ($hasil as $a)
-                  <div class="modal fade" id="editModal{{$a->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Edit Data Agenda</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <form action="/editAgenda/{{$a->id}}" method="post" class="form-horizontal">
-                            @csrf
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <label for="">Tanggal Kegiatan</label>
-                                <input class="form-control" type="date" name="tanggal_agenda" value="{{$a->tanggal_agenda}}">
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <input class="form-control" name="acara_agenda" placeholder="Acara Kegiatan" value="{{$a->acara_agenda}}" type="text">
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <label for="">Kegiatan</label><br>
-                                <textarea class="form-control" name="kegiatan_agenda" cols="45" rows="3">{{$a->kegiatan_agenda}}</textarea>
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-primary">Simpan Data</button>
-                        </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                  @endforeach
                 </div>
               </div>
+
+              <div class="modal fade" id="exampleModal{{ $a->id }}{{ $loop->iteration }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Ubah Evaluasi {{ $loop->iteration }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/editEvaluasi" method="post">
+                      @csrf
+                      <div class="modal-body">
+                        <input type="hidden" name="nomor" value="{{ $loop->iteration }}">
+                        <input type="hidden" name="id" value="{{ $a->id }}">
+                        <label for="">Ubah Evaluasi Anda Sebelumnya</label>
+                        <textarea required name="evaluasi" class="form-control" cols="30" rows="10">{{ $a->evaluasi }}</textarea>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              @endforeach
             </div>
           </div>
         </div>
@@ -279,6 +285,7 @@
   <script src="admin2/assets/js/chart-data.js"></script>
 
   <script src="admin2/assets/js/app.js"></script>
+
 </body>
 
 </html>

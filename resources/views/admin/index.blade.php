@@ -106,7 +106,10 @@
               <a href="/hasilAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
                 <span>Hasil</span></a>
             </li>
-
+            <li>
+              <a href="/prodiAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
+                <span>Prodi</span></a>
+            </li>
           </ul>
           </li>
           </ul>

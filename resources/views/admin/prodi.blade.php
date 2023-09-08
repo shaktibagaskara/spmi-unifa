@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="admin2/assets/plugins/fontawesome/css/all.min.css">
   <link rel="stylesheet" href="admin2/assets/plugins/fontawesome/css/fontawesome.min.css">
 
+  <link rel="stylesheet" href="admin2/assets/plugins/icons/feather/feather.css">
+
   <link rel="stylesheet" href="admin2/assets/css/fullcalendar.min.css">
 
   <link rel="stylesheet" href="admin2/assets/css/dataTables.bootstrap4.min.css">
@@ -101,20 +103,22 @@
               <a href="/informasiAdmin"><img src="admin2/assets/img/sidebar/icon-8.png" alt="icon">
                 <span>Informasi</span></a>
             </li>
-            <li class="active">
+            <li>
               <a href="/hasilAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
                 <span>Hasil</span></a>
             </li>
-            <li>
+            <li class="active">
               <a href="/prodiAdmin"><img src="admin2/assets/img/sidebar/icon-12.png" alt="icon">
                 <span>Prodi</span></a>
             </li>
+
           </ul>
           </li>
           </ul>
         </div>
       </div>
     </div>
+
 
 
     <div class="page-wrapper">
@@ -127,14 +131,14 @@
                 <div class="row align-items-center">
                   <div class="col-sm-6">
                     <div class="page-title">
-                      Daftar Hasil (
-                      @if ($totalHasil == 0)
-                      <div class="badge bg-danger t ext-white">
-                        {{ ' Total : '. $totalHasil}}
+                      Daftar Program Studi UNIFA (
+                      @if ($totalProdi == 0)
+                      <div class="badge bg-danger text-white">
+                        {{ ' Total : '. $totalProdi}}
                       </div>
                       @else ()
-                      <div class="badge bg-info tex t-white">
-                        {{ ' Total : '. $totalHasil}}
+                      <div class="badge bg-info text-white">
+                        {{ ' Total : '. $totalProdi}}
                       </div>
                       @endif
                       )
@@ -142,40 +146,56 @@
                   </div>
                   <div class="col-sm-6 text-sm-right">
                     <div class=" mt-sm-0 mt-2">
+                      <button style="background-color: blue; color:white" data-bs-toggle="modal" data-bs-target="#tambahModal" class="btn mr-2"><i class="fe fe-file-plus"></i><span class="ml-2">Tambah Data</span></button>
 
                     </div>
                   </div>
                 </div>
               </div>
 
+              @if (session()->has('error'))
+              <div class="alert alert-danger" role="alert">
+                {{ session('error') }}
+              </div>
+              @endif
+              @if (session()->has('berhasil'))
+              <div class="alert alert-success" role="alert">
+                {{ session('berhasil') }}
+              </div>
+              @endif
+
               <div class="card-body">
-                <div class="">
+                <div class="table-responsive">
                   <table class="table custom-table">
                     <thead class="thead-light">
                       <tr>
                         <th>No. </th>
-                        <th>Pertanyaan</th>
-                        <th>Bukti</th>
-                        <th>Referensi</th>
-                        <th>Keterangan</th>
-
+                        <th>Nama Program Studi</th>
+                        <th>Kepala Program Studi</th>
+                        <th class="text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($hasil as $a)
+                      @foreach ($prodi as $a)
 
                       <tr>
                         <td>
                           <h2> {{ $loop->iteration }} </h2>
                         </td>
-                        <td> {{ $a->pertanyaan }}</td>
+                        <td> {{ $a->nama_prodi }}</td>
                         <td>
-                          {{ $a->bukti }}
+                          {{ $a->nama_kaprodi }}
                         </td>
-                        <td> {{ $a->referensi }}</td>
-                        <td> {{ $a->keterangan }}</td>
-                      </tr>
 
+                        <td class="text-right">
+                          <a href="#!" class="btn btn-primary btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#editModal{{$a->id}}">
+                            <i class="far fa-edit" data-bs-toggle="tooltip" title="Edit"></i>
+                          </a>
+                          <a href="/hapusProdi/{{$a->id}}" onclick="return confirm('Apakah anda yakin data ini akan dihapus?');" type="submit" class="btn btn-danger btn-sm mb-1">
+                            <i class="far fa-trash-alt" data-bs-toggle="tooltip" title="Hapus"></i>
+                          </a>
+                        </td>
+                      </tr>
                       @endforeach
                     </tbody>
                   </table>
@@ -185,29 +205,21 @@
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Tambah Data Agenda</h5>
+                          <h5 class="modal-title" id="exampleModalLabel">Tambah Data User</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                          <form action="/tambahAgenda" method="post" class="form-horizontal">
+                          <form action="/tambahProdi" method="post" class="form-horizontal">
                             @csrf
                             <div class="form-group">
                               <div class="col-sm-12">
-                                <label for="">Tanggal Kegiatan</label>
-                                <input class="form-control" type="date" name="tanggal_agenda">
+                                <input class="form-control" placeholder="Nama Program Studi" type="text" name="nama_prodi">
                                 <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                               </div>
                             </div>
                             <div class="form-group">
                               <div class="col-sm-12">
-                                <input class="form-control" name="acara_agenda" placeholder="Acara Kegiatan" type="text">
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <label for="">Kegiatan</label><br>
-                                <textarea class="form-control" name="kegiatan_agenda" cols="45" rows="3"></textarea>
+                                <input class="form-control" name="nama_kaprodi" placeholder="Nama Kaprodi" type="text">
                                 <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                               </div>
                             </div>
@@ -222,37 +234,30 @@
                   </div>
 
                   <!-- Modal Edit -->
-                  @foreach ($hasil as $a)
+                  @foreach ($prodi as $a)
                   <div class="modal fade" id="editModal{{$a->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Edit Data Agenda</h5>
+                          <h5 class="modal-title" id="exampleModalLabel">Edit Data Program Studi</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                          <form action="/editAgenda/{{$a->id}}" method="post" class="form-horizontal">
+                          <form action="/editProdi/{{$a->id}}" method="post" class="form-horizontal">
                             @csrf
                             <div class="form-group">
                               <div class="col-sm-12">
-                                <label for="">Tanggal Kegiatan</label>
-                                <input class="form-control" type="date" name="tanggal_agenda" value="{{$a->tanggal_agenda}}">
+                                <input class="form-control" placeholder="Nama Program Studi" type="text" name="nama_prodi" value="{{$a->nama_prodi}}">
                                 <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                               </div>
                             </div>
                             <div class="form-group">
                               <div class="col-sm-12">
-                                <input class="form-control" name="acara_agenda" placeholder="Acara Kegiatan" value="{{$a->acara_agenda}}" type="text">
+                                <input class="form-control" name="nama_kaprodi" placeholder="Nama Kepala Program Studi" type="text" value="{{$a->nama_kaprodi}}">
                                 <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
                               </div>
                             </div>
-                            <div class="form-group">
-                              <div class="col-sm-12">
-                                <label for="">Kegiatan</label><br>
-                                <textarea class="form-control" name="kegiatan_agenda" cols="45" rows="3">{{$a->kegiatan_agenda}}</textarea>
-                                <small class="text-danger"> <i>*Tidak boleh kosong</i> </small>
-                              </div>
-                            </div>
+
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

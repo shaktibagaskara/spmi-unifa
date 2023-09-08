@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\DaftarController;
+use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\HasilController;
 use App\Http\Controllers\InformasiController;
 use App\Http\Controllers\PertanyaanController;
@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Pertanyaan;
 use App\Models\Informasi;
 use App\Models\Hasil;
+use App\Models\Prodi;
 
 Route::post('/login', [LoginController::class, 'authenticate']);
 Route::get('/logout', [LoginController::class, 'logout']);
@@ -29,12 +30,7 @@ Route::get('/dashboardKaprodi', function () {
     if (session('username') == null) {
         return redirect('/');
     }
-    // $coba = Informasi::All();
-    // echo session('username');
-    // foreach ($coba as $c) {
-    //     echo $c->auditee;
-    // }
-    // return;
+
     return view('kaprodi/index', [
         'totalUser' => User::count(),
         'user' => User::All(),
@@ -121,6 +117,8 @@ Route::get('/hasilDosen', function () {
     if (session('username') == null) {
         return redirect('/');
     }
+    $user =  User::where('username',  session('username'))->first();
+    // return $prodi;
     return view('dosen/hasil', [
         'totalUser' => User::count(),
         'user' => User::All(),
@@ -128,10 +126,16 @@ Route::get('/hasilDosen', function () {
         'pertanyaan' => Pertanyaan::All(),
         'totalInformasi' => Informasi::count(),
         'informasi' => Informasi::All(),
-        'totalHasil' => Hasil::where('pengirim',  session('username'))->count(),
-        'hasil' => Hasil::where('pengirim',  session('username'))->get()
+        'prodi' => $user->prodi,
+        'totalHasil' => Hasil::where('nama_prodi',  $user->prodi)->count(),
+        'hasil' =>  Hasil::where('nama_prodi',  $user->prodi)->get()
     ]);
 });
+
+//Evaluasi
+Route::post('/tambahEvaluasi', [HasilController::class, 'tambahEvaluasi']);
+Route::post('/resetEvaluasi', [HasilController::class, 'resetEvaluasi']);
+Route::post('/editEvaluasi', [HasilController::class, 'editEvaluasi']);
 
 //Dashboard Admin
 Route::get('/dashboardAdmin', function () {
@@ -149,6 +153,27 @@ Route::get('/dashboardAdmin', function () {
         'hasil' => Hasil::All()
     ]);
 });
+
+//Prodi Admin
+Route::get('/prodiAdmin', function () {
+    if (session('username') == null) {
+        return redirect('/');
+    }
+    return view('admin/prodi', [
+        'totalProdi' => Prodi::count(),
+        'prodi' => Prodi::All(),
+        'totalPertanyaan' => Pertanyaan::count(),
+        'pertanyaan' => Pertanyaan::All(),
+        'totalInformasi' => Informasi::count(),
+        'informasi' => Informasi::All(),
+        'totalHasil' => Hasil::count(),
+        'hasil' => Hasil::All()
+    ]);
+});
+Route::post('/tambahProdi', [ProdiController::class, 'tambahProdi']);
+Route::post('/editProdi/{id}', [ProdiController::class, 'updateProdi']);
+Route::get('/hapusProdi/{id}', [ProdiController::class, 'hapusProdi']);
+
 
 Route::post('/tambahPertanyaan', [PertanyaanController::class, 'tambahPertanyaan']);
 Route::post('/editPertanyaan/{id}', [PertanyaanController::class, 'updatePertanyaan']);
@@ -205,7 +230,9 @@ Route::get('/userAdmin', function () {
         'totalInformasi' => Informasi::count(),
         'informasi' => Informasi::All(),
         'totalHasil' => Hasil::count(),
-        'hasil' => Hasil::All()
+        'hasil' => Hasil::All(),
+        'totalProdi' => Prodi::count(),
+        'prodi' => Prodi::All()
     ]);
 });
 
@@ -225,6 +252,8 @@ Route::get('/informasiAdmin', function () {
         'informasi' => Informasi::All(),
         'totalHasil' => Hasil::count(),
         'hasil' => Hasil::All(),
+        'totalProdi' => Prodi::count(),
+        'prodi' => Prodi::All()
 
     ]);
 });

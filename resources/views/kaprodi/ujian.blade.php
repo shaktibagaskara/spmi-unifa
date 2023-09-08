@@ -188,7 +188,6 @@
                           <i>(Diisi sesuai dengan butir standar yang dinilai kurang memenuhi)</i>
                         </td>
                         <td colspan="2">Bukti</td>
-                        <td rowspan="2">Evaluasi </td>
 
                       </tr>
                       <tr>
@@ -223,10 +222,7 @@
                           <span class="badge bg-light">Upload bukti pendukung</span>
                           <input type="file" class="form-control" name="file_bukti{{ $loop->iteration }}">
                         </td>
-                        <td>
-                          <textarea required name="evaluasi{{ $loop->iteration }}" class="form-control" id="" cols="30" rows="10"></textarea>
-                          <!-- <input type="text" class="form-control" placeholder="" name="evaluasi"> -->
-                        </td>
+
                       </tr>
                       @endforeach
                     </tbody>

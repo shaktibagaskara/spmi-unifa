@@ -44,6 +44,39 @@ class HasilController extends Controller
         return redirect('/hasilAdmin');
     }
 
+    public function tambahEvaluasi(Request $request)
+    {
+        // return $request->id;
+        $nomor = $request->nomor;
+        $hasil           = Hasil::find($request->id);
+        $hasil->evaluasi    = $request->evaluasi;
+        $hasil->save();
+        $request->session()->flash('berhasil', 'Evaluasi pada nomor ' . $nomor . ' dilakukan! ');
+        return redirect('/hasilDosen');
+    }
+
+    public function resetEvaluasi(Request $request)
+    {
+        // return $request->id;
+        $nomor = $request->nomor;
+        $hasil           = Hasil::find($request->id);
+        $hasil->evaluasi    = '';
+        $hasil->save();
+        $request->session()->flash('berhasil', 'Data Evaluasi pada nomor ' . $nomor . ' Berhasil direset! ');
+        return redirect('/hasilDosen');
+    }
+
+    public function editEvaluasi(Request $request)
+    {
+        // return $request->id;
+        $nomor = $request->nomor;
+        $hasil           = Hasil::find($request->id);
+        $hasil->evaluasi    = $request->evaluasi;
+        $hasil->save();
+        $request->session()->flash('berhasil', 'Data Evaluasi pada nomor ' . $nomor . ' Berhasil diubah! ');
+        return redirect('/hasilDosen');
+    }
+
     public function tambahHasil(Request $request)
     {
         // return  $request->jabatan;
@@ -86,7 +119,7 @@ class HasilController extends Controller
             $validateData['pertanyaan']  =  $validateData1['pertanyaan' . $ulang];
             $validateData['bukti']  =  $validateData1['bukti' . $ulang];
             $validateData['keterangan']  =  $validateData1['keterangan' . $ulang];
-            $validateData['evaluasi']  =  $validateData1['evaluasi' . $ulang];
+            $validateData['evaluasi']  =  "-";
             $validateData['file_bukti']  =  $path;
             // return $validateData['referensi'] = "ansel";
             // return 'ok';
@@ -107,8 +140,8 @@ class HasilController extends Controller
                 'pertanyaan' . $ulang => '',
                 'bukti' . $ulang => '',
                 'keterangan' . $ulang => '',
-                'evaluasi' . $ulang => '',
                 'file_bukti' . $ulang => '',
+                'evaluasi' . $ulang => '',
             ]);
 
             $validateData = $request->validate([
@@ -125,8 +158,8 @@ class HasilController extends Controller
                 'ketua_audit' => '',
                 'audit' => '',
                 'auditee' => '',
-                'evaluasi' => '',
                 'jabatan' => '',
+                'evaluasi' => '',
                 'file_bukti' => ''
             ]);
 
@@ -140,7 +173,7 @@ class HasilController extends Controller
             $validateData['pertanyaan']  =  $validateData1['pertanyaan' . $ulang];
             $validateData['bukti']  =  $validateData1['bukti' . $ulang];
             $validateData['keterangan']  =  $validateData1['keterangan' . $ulang];
-            $validateData['evaluasi']  =  $validateData1['evaluasi' . $ulang];
+            $validateData['evaluasi']  =  '-';
             $validateData['file_bukti']  =  $path;
             // return $validateData['referensi'] = "ansel";
             // return 'ok';
